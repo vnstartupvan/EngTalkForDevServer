@@ -9,4 +9,5 @@ const isAuth = authMiddleware.isAuth;
 
 router.get('/profile', isAuth, userController.getProfile);
 
+// router.post(`/users`, userController.getUsers);
 module.exports = router;

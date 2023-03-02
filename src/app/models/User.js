@@ -4,8 +4,12 @@ const ObjectId = Schema.ObjectId;
 
 const User = new Schema({
     id: ObjectId,
-    username: { type: String, default: 'Any' },
-    password: { type: String, default: 'Any' },
+    username: { type: String },
+    password: { type: String },
+    pic: { type: String, default: '' },
+    fullname: { type: String, default: 'null' },
+    email: { type: String, default: 'null' },
+    refreshToken: { type: String }
 }, {
     timestamps: true,
 });

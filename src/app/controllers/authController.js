@@ -2,11 +2,13 @@ const UserModel = require('../models/User');
 const bcrypt = require("bcrypt");
 const authMethod = require("../methods/auth.method");
 const randToken = require('rand-token');
-
+const utils = require('../utils/utils');
 class authController {
     async register(req, res) {
         console.log(req.body);
-        const username = req.body.username || 'test';
+        const username = req.body.username;
+        const fullname = req.body.fullname;
+        const email = req.body.email;
         const user = await UserModel.findOne({ username: username });
         if (user)
             res.status(409).send('Tên tài khoản đã tồn tại.');
@@ -16,6 +18,8 @@ class authController {
             const newUser = {
                 username: username,
                 password: hashPassword,
+                fullname: fullname,
+                email: email,
                 // ...Thêm các tham số khác tại đây ...
             };
             const createUser = new UserModel(newUser);
@@ -31,16 +35,17 @@ class authController {
         }
     };
     async login(req, res) {
-        const username = req.body.username || 'username';
-        const password = req.body.password || 'test';
-
+        const username = req.body.username;
+        const password = req.body.password;
+        console.log('username: ', username, 'password: ', password)
         const user = await UserModel.findOne({ username: username });
+        console.log('user: ', user)
         if (!user) {
             return res.status(401).send('Tên đăng nhập không tồn tại.');
         }
 
         const isPasswordValid = bcrypt.compareSync(password, user.password);
-        console.log(password, user.password);
+        console.log('validpass: ', isPasswordValid)
         if (!isPasswordValid) {
             return res.status(401).send('Mật khẩu không chính xác.');
         }
@@ -67,11 +72,13 @@ class authController {
         let refreshToken = randToken.generate(jwtVariable.refreshTokenSize); // tạo 1 refresh token ngẫu nhiên
         if (!user.refreshToken) {
             // Nếu user này chưa có refresh token thì lưu refresh token đó vào database
-            // await UserModel.findOneAndUpdate(user.username, refreshToken);
+            await UserModel.findOneAndUpdate({ username: user.username }, { refreshToken: refreshToken });
         } else {
             // Nếu user này đã có refresh token thì lấy refresh token đó từ database
             refreshToken = user.refreshToken;
         }
+        res.cookie('accessToken', accessToken);
+        res.cookie('refreshToken', refreshToken);
 
         return res.json({
             msg: 'Đăng nhập thành công.',
@@ -83,13 +90,15 @@ class authController {
 
     async refreshToken(req, res) {
         // Lấy access token từ header
-        const accessTokenFromHeader = req.headers.x_authorization;
+        // const accessTokenFromHeader = req.headers.x_authorization;
+        const accessTokenFromHeader = utils.getCookie('accessToken', req.headers.cookie);
+        console.log(accessTokenFromHeader)
         if (!accessTokenFromHeader) {
             return res.status(400).send('Không tìm thấy access token.');
         }
 
         // Lấy refresh token từ body
-        const refreshTokenFromBody = req.body.refreshToken;
+        const refreshTokenFromBody = utils.getCookie('refreshToken', req.headers.cookie);
         if (!refreshTokenFromBody) {
             return res.status(400).send('Không tìm thấy refresh token.');
         }
@@ -104,6 +113,7 @@ class authController {
             accessTokenFromHeader,
             accessTokenSecret,
         );
+        console.log('decoded: ', decoded)
         if (!decoded) {
             return res.status(400).send('Access token không hợp lệ.');
         }

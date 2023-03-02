@@ -5,7 +5,11 @@ const ObjectId = Schema.ObjectId;
 const Room = new Schema({
     id: ObjectId,
     url: { type: String, require: true },
-    users: { type: Object, default: {} },
+    groupAdmin: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    users: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }],
     userLimit: { type: Number, default: 10 },
     topic: { type: String, default: 'Any' },
     language: { type: String, default: 'Any' },
