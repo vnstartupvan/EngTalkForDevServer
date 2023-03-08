@@ -1,6 +1,5 @@
 module.exports = class Room {
-    constructor(socket, _id, url, groupAdmin, userLimit, topic, language, level) {
-        this.socket = socket;
+    constructor(url, userLimit, topic, language, level, _id, groupAdmin) {
         this._id = _id;
         this.url = url;
         this.groupAdmin = groupAdmin;

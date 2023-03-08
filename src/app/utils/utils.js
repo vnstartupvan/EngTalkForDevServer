@@ -1,6 +1,6 @@
 exports.getCookie = function (cname, cookie) {
     let name = cname + "=";
-    let ca = cookie.split(';');
+    let ca = cookie ? cookie.split(';') : '';
     for (let i = 0; i < ca.length; i++) {
         let c = ca[i];
         while (c.charAt(0) == ' ') {

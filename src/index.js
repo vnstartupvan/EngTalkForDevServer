@@ -30,8 +30,7 @@ const socketIo = require("socket.io")(server, {
 const rooms = [];
 
 socketIo.on("connection", (socket) => {
-    console.log('connect')
-    const global = new GlobalMap(socket);
+    const global = new GlobalMap(socket, rooms);
     global.init();
 });
 
