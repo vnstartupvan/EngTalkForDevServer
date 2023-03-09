@@ -58,6 +58,7 @@ module.exports = class GlobalMap {
             const userIndex = this.rooms[roomIndex].users.findIndex(i => i._id === user.id);
             this.rooms[roomIndex].users.splice(userIndex, 1);
             this.handleSendSignal();
+            this.socket.to(url).emit('user-disconnect', { peerId: peerId, user: user })
         })
     }
 
