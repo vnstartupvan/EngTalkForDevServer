@@ -1,7 +1,8 @@
 const Room = require('./roomSocket');
 module.exports = class GlobalMap {
-    constructor(socket, rooms) {
+    constructor(socket, rooms, peers) {
         this.rooms = rooms;
+        this.peers = peers;
         this.socket = socket;
     }
 
@@ -48,9 +49,10 @@ module.exports = class GlobalMap {
         }
 
         this.socket.join(url);
-        this.socket.emit("joint-room", this.rooms[roomIndex].users);
+        this.socket.to(url).emit("joint-room", this.rooms[roomIndex].users);
         this.socket.emit('rooms-signal', this.rooms);
-        this.socket.to(url).emit('new-user-connect', user)
+        this.socket.to(url).emit('new-user-connect', user);
+        this.socket.to(url).emit('newPeers', this.peers);
 
         //User disconnect
         this.socket.on('disconnect', () => {
@@ -79,10 +81,34 @@ module.exports = class GlobalMap {
             console.log('video: ', roomURL, stream)
             this.socket.to(roomURL).emit('server-send-video', (stream));
         })
-        this.socket.on('send-peerId', (peerId) => {
-            console.log('peerId: ', peerId);
-            this.socket.emit('peerId', peerId);
+        this.socket.on('send-peerId', (room, userId, mediaId) => {
+            console.log('peerId: ', room, userId, mediaId);
+            const userPeer = {
+                [userId]: mediaId,
+            }
+            const isExisted = this.peers.findIndex(i => i.userId === mediaId);
+            if (isExisted === -1) this.peers.push(userPeer);
+
+            this.socket.join(room);
+
+            this.socket.to(room).emit('newPeers', this.peers);
+
+            this.socket.on('disconnect', () => {
+                this.peers = this.peers.filter(i => !i[userId] && i);
+            })
         })
+
+        //chat 
+        this.socket.on('send-msg', (room, user, msg) => {
+            console.log('new msg: ', {
+                room,
+                user,
+                msg
+            })
+            this.socket.join(room);
+            this.socket.to(room).emit('receive-msg', user, msg);
+        });
+
     }
 
 }

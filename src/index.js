@@ -28,9 +28,9 @@ const socketIo = require("socket.io")(server, {
 });
 
 const rooms = [];
-
+const peers = [];
 socketIo.on("connection", (socket) => {
-    const global = new GlobalMap(socket, rooms);
+    const global = new GlobalMap(socket, rooms, peers);
     global.init();
 });
 
