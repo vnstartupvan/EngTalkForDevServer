@@ -99,13 +99,15 @@ module.exports = class GlobalMap {
         })
 
         //chat 
+        this.socket.on('join-chat', (room) => {
+            this.socket.join(room);
+        })
         this.socket.on('send-msg', (room, user, msg) => {
             console.log('new msg: ', {
                 room,
                 user,
                 msg
             })
-            this.socket.join(room);
             this.socket.to(room).emit('receive-msg', user, msg);
         });
 
