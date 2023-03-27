@@ -20,11 +20,11 @@ const URI = process.env.URI || 'mongodb+srv://engtalkfordev:engtalkfordev@cluste
 
 app.use('/', cors({
     credentials: true,
-    origin: 'http://localhost:3000'
+    origin: '*'
 }));
 
 const socketIo = require("socket.io")(server, {
-    cors: 'http://localhost:3000'
+    cors: '*'
 });
 
 const rooms = [];
