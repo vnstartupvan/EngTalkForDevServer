@@ -18,18 +18,15 @@ const PORT = process.env.PORT || 3001;
 
 const URI = process.env.URI || 'mongodb+srv://engtalkfordev:engtalkfordev@cluster0.xah4te4.mongodb.net/?retryWrites=true&w=majority';
 
-// app.use('/', cors({
-//     credentials: true,
-//     origin: '*'
-// }));
+app.use('/', cors({
+    credentials: true,
+    origin: ['http://localhost:3000','https://engtalkfordev-client-git-main-vnstartupvan.vercel.app']
+}));
 
-// const socketIo = require("socket.io")(server, {
-//     cors: '*'
-// });
+const socketIo = require("socket.io")(server, {
+    cors: ['http://localhost:3000','https://engtalkfordev-client-git-main-vnstartupvan.vercel.app']
+});
 
-app.use('/', cors());
-
-const socketIo = require("socket.io")(server);
 
 const rooms = [];
 const peers = [];
