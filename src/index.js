@@ -23,6 +23,7 @@ app.use('/', cors({
     origin: ['http://localhost:3000', 'https://engtalkfordev-client-git-main-vnstartupvan.vercel.app']
 }));
 
+
 const socketIo = require("socket.io")(server, { cors: { origin: '*' } });
 
 

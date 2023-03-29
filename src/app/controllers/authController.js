@@ -79,7 +79,7 @@ class authController {
         }
         // res.cookie('accessToken', accessToken);
         // res.cookie('refreshToken', refreshToken);
-        res.setHeader('Set-Cookie', `accessToken=${accessToken}; refreshToken=${refreshToken}`);
+        // res.setHeader('Set-Cookie', `accessToken=${accessToken}; refreshToken=${refreshToken}`);
 
         return res.json({
             msg: 'Đăng nhập thành công.',
