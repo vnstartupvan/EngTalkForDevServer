@@ -77,9 +77,13 @@ class authController {
             // Nếu user này đã có refresh token thì lấy refresh token đó từ database
             refreshToken = user.refreshToken;
         }
-        // res.cookie('accessToken', accessToken);
-        // res.cookie('refreshToken', refreshToken);
-        res.setHeader('Set-Cookie', `accessToken=${accessToken}; refreshToken=${refreshToken}`);
+        res.cookie('accessToken', accessToken, {
+            httpOnly: true,
+        });
+        res.cookie('refreshToken', refreshToken, {
+            httpOnly: true,
+        });
+//         res.setHeader('Set-Cookie', `accessToken=${accessToken}; refreshToken=${refreshToken}`);
 
         return res.json({
             msg: 'Đăng nhập thành công.',
