@@ -5,8 +5,10 @@ dotenv.config();
 const utils = require('../utils/utils');
 exports.isAuth = async (req, res, next) => {
     // Lấy access token từ header
-    // const accessTokenFromHeader = req.headers.x_authorization;
-    const accessTokenFromHeader = utils.getCookie('accessToken', req.headers.cookie);
+    const accessTokenFromHeader = req.headers.authorization;
+    console.log('accessTokenFromHeader: ', accessTokenFromHeader);
+    // const accessTokenFromHeader = utils.getCookie('accessToken', req.headers.cookie);
+
     if (!accessTokenFromHeader) {
         return res.status(401).send('Không tìm thấy access token!');
     }

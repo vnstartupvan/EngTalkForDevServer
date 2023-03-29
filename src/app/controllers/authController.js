@@ -91,8 +91,10 @@ class authController {
 
     async refreshToken(req, res) {
         // Lấy access token từ header
-        // const accessTokenFromHeader = req.headers.x_authorization;
-        const accessTokenFromHeader = utils.getCookie('accessToken', req.headers.cookie);
+        const accessTokenFromHeader = req.headers.authorization;
+        // const accessTokenFromHeader = utils.getCookie('accessToken', req.headers.cookie);
+        // console.log(req.headers.x_authorization, 'ccL: ',accessTokenFromHeader )
+
         console.log(accessTokenFromHeader)
         if (!accessTokenFromHeader) {
             return res.status(400).send('Không tìm thấy access token.');
